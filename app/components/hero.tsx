@@ -142,7 +142,7 @@ export default function Hero() {
       <div className="absolute inset-0 bg-gradient-to-tr from-pink-100/30 to-blue-100/30 animate-gradient"></div>
 
       {/* Left side with typing effect */}
-      <div className="relative z-10 w-full md:w-1/3 h-full flex items-center justify-center px-8 py-20 md:py-0">
+      <div className="relative z-10 w-full md:w-1/2 h-full flex items-center justify-center px-8 py-20 md:py-0">
         <div>
           <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight text-violet-500 mb-8 min-h-[96px]">
             {typedText}
@@ -152,7 +152,7 @@ export default function Hero() {
       </div>
 
       {/* Right side with introduction */}
-      <div className="relative z-10 w-full md:w-2/3 h-full flex items-center justify-center px-8 py-20 md:py-0">
+      <div className="relative z-10 w-full md:w-1/2 h-full flex items-center justify-center px-8 py-20 md:py-0">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
