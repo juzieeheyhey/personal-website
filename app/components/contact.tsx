@@ -8,32 +8,8 @@ import Link from "next/link"
 import { Github, Linkedin, Mail } from "lucide-react"
 
 
-const formSchema = z.object({
-  name: z.string().min(2, {
-    message: "name must be at least 2 characters.",
-  }),
-  email: z.string().email({
-    message: "please enter a valid email address.",
-  }),
-  message: z.string().min(10, {
-    message: "message must be at least 10 characters.",
-  }),
-})
 
 export default function Contact() {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      message: "",
-    },
-  })
-
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
-  }
-
   return (
     <section className="relative overflow-hidden py-20 bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100">
       <div className="container relative z-10 mx-auto px-4">
