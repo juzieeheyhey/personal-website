@@ -60,7 +60,7 @@ export default function Hero() {
     canvas.height = window.innerHeight
 
     const particles: Particle[] = []
-    const particleCount = 150
+    const particleCount = 800
 
     const mouse = {
       x: null as number | null,
