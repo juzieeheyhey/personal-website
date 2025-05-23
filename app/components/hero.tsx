@@ -249,7 +249,7 @@ export default function Hero() {
           </p>
 
           <div className="flex justify-center gap-4 text-sm text-violet-500">
-            <a href="#" className="flex items-center gap-1 hover:text-violet-700 transition-colors">
+            <a href="/resume.pdf" className="flex items-center gap-1 hover:text-violet-700 transition-colors">
               view resume <ArrowRight size={16} />
             </a>
           </div>
