@@ -1,47 +1,53 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { motion } from "framer-motion"
-import { ArrowRight } from "lucide-react"
+import { motion, useScroll, useTransform } from "framer-motion"
+import { ArrowRight, ChevronDown } from 'lucide-react'
 
 export default function Hero() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [showContent, setShowContent] = useState(false)
   const [typedText, setTypedText] = useState("")
   const fullText = "hi there,"
   const typingSpeed = 130
 
+  // Parallax scrolling effect
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"],
+  })
+
+  const y = useTransform(scrollYProgress, [0, 1], [0, 200])
+  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0])
+
+
   useEffect(() => {
+    // Initial animation sequence
+    const timeout1 = setTimeout(() => {
+      startTypingAnimation()
+    }, 500)
+
+    const timeout2 = setTimeout(() => {
+      setShowContent(true)
+    }, 2000)
+
+    return () => {
+      clearTimeout(timeout1)
+      clearTimeout(timeout2)
+    }
+  }, [])
+  const startTypingAnimation = () => {
     let currentIndex = 0
-    let isDeleting = false
-    const pauseTime = 5000
-    const type = () => {
-      if (!isDeleting) {
+    const typingInterval = setInterval(() => {
+      if (currentIndex <= fullText.length) {
         setTypedText(fullText.slice(0, currentIndex))
         currentIndex++
-
-        if (currentIndex > fullText.length) {
-          // Pause before deleting
-          isDeleting = true
-          setTimeout(type, pauseTime)
-        } else {
-          setTimeout(type, typingSpeed)
-        }
       } else {
-        // Deleting backward
-        currentIndex--
-        setTypedText(fullText.slice(0, currentIndex))
-
-        if (currentIndex === 0) {
-          // Pause before typing again
-          isDeleting = false
-          setTimeout(type, pauseTime / 10)
-        } else {
-          setTimeout(type, typingSpeed / 2) // faster deleting
-        }
+        clearInterval(typingInterval)
       }
-    }
-    type()
-  }, [])
+    }, typingSpeed)
+  }
 
   useEffect(() => {
     if (!canvasRef.current) return
@@ -56,20 +62,41 @@ export default function Hero() {
     const particles: Particle[] = []
     const particleCount = 150
 
+    const mouse = {
+      x: null as number | null,
+      y: null as number | null,
+      radius: 150,
+    }
+
+    // track mouse position
+    window.addEventListener("mousemove", (event) => {
+      mouse.x = event.x
+      mouse.y = event.y
+    })
+
+    window.addEventListener("mouseout", () => {
+      mouse.x = null
+      mouse.y = null
+    })
+
     class Particle {
       x: number
       y: number
       size: number
-      speedX: number
-      speedY: number
+      baseX: number
+      baseY: number
+      density: number
       color: string
+      distance: number
 
       constructor() {
         this.x = Math.random() * canvas.width
         this.y = Math.random() * canvas.height
         this.size = Math.random() * 3 + 1
-        this.speedX = Math.random() * 2.5 - 1.25
-        this.speedY = Math.random() * 2.5 - 1.25
+        this.baseX = this.x
+        this.baseY = this.y
+        this.density = Math.random() * 30 + 1
+        this.distance = 0
 
         const colors = [
           "rgba(255, 182, 193, 0.7)",
@@ -82,13 +109,43 @@ export default function Hero() {
       }
 
       update() {
-        this.x += this.speedX
-        this.y += this.speedY
+        // mouse interaction
+        if (mouse.x != null && mouse.y != null) {
+          const dx = mouse.x - this.x
+          const dy = mouse.y - this.y
+          const distance = Math.sqrt(dx * dx + dy * dy)
+          this.distance = distance
 
-        if (this.x > canvas.width) this.x = 0
-        if (this.x < 0) this.x = canvas.width
-        if (this.y > canvas.height) this.y = 0
-        if (this.y < 0) this.y = canvas.height
+          if (distance < mouse.radius) {
+            const forceDirectionX = dx / distance
+            const forceDirectionY = dy / distance
+            const force = (mouse.radius - distance) / mouse.radius
+            const directionX = forceDirectionX * force * this.density
+            const directionY = forceDirectionY * force * this.density
+
+            this.x -= directionX
+            this.y -= directionY
+          }
+          else {
+            if (this.x !== this.baseX) {
+              const dx = this.x - this.baseX
+              this.x -= dx / 10
+            }
+            if (this.y !== this.baseY) {
+              const dy = this.y - this.baseY
+              this.y -= dy / 10
+            }
+          }
+        } else {
+          if (this.x !== this.baseX) {
+            const dx = this.x - this.baseX
+            this.x -= dx / 10
+          }
+          if (this.y !== this.baseY) {
+            const dy = this.y - this.baseY
+            this.y -= dy / 10
+          }
+        }
       }
 
       draw() {
@@ -133,8 +190,15 @@ export default function Hero() {
     return () => window.removeEventListener("resize", handleResize)
   }, [])
 
+  const scrollToExperience = () => {
+    const experienceSection = document.getElementById("experience")
+    if (experienceSection) {
+      experienceSection.scrollIntoView({ behavior: "smooth" })
+    }
+  }
+
   return (
-    <div className="relative min-h-screen w-full overflow-hidden flex flex-col md:flex-row items-center">
+    <div ref={containerRef} className="relative min-h-screen w-full overflow-hidden flex flex-col md:flex-row items-center">
       <canvas
         ref={canvasRef}
         className="absolute inset-0 h-full w-full bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100"
@@ -142,32 +206,41 @@ export default function Hero() {
       <div className="absolute inset-0 bg-gradient-to-tr from-pink-100/30 to-blue-100/30 animate-gradient"></div>
 
       {/* Left side with typing effect */}
-      <div className="relative z-10 w-full md:w-1/2 h-full flex items-center justify-center px-8 py-20 md:py-0">
+      <motion.div style={{ y, opacity }} className="relative z-10 w-full md: w-1/3 h-full flex items-center justify-center px-8 py-20 md:py-0">
         <div>
-          <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight text-violet-500 mb-8 min-h-[96px]">
+          <motion.h1
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1 }}
+            className="text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight text-violet-500 mb-8 min-h-[96px]"
+          >
             {typedText}
             <span className="inline-block w-[4px] h-[60px] bg-violet-500 ml-2 animate-blink"></span>
-          </h1>
+          </motion.h1>
         </div>
-      </div>
+      </motion.div>
+
 
       {/* Right side with introduction */}
-      <div className="relative z-10 w-full md:w-1/2 h-full flex items-center justify-center px-8 py-20 md:py-0">
+      <motion.div
+        style={{ y, opacity }}
+        className="relative z-10 w-full md:w-2/3 h-full flex items-center justify-center px-8 py-20 md:py-0"
+      >
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="max-w-md"
+          animate={{ opacity: showContent ? 1 : 0, y: showContent ? 0 : 20 }}
+          transition={{ duration: 0.8, delay: 1 }}
+          className="max-w-xl"
         >
-          <h2 className="text-2xl md:text35xl font-medium tracking-tight lowercase mb-2">i'm</h2>
+          <h2 className="text-2xl md:text-3xl font-medium tracking-tight lowercase mb-2">i'm</h2>
           <h2 className="text-6xl md:text-7xl font-bold tracking-tight lowercase mb-2 text-violet-500">
             jessica nguyen
           </h2>
-          <h3 className="text-2xl md:text-3xl font-medium tracking-tight lowercase mb-6 text-zinc-600 ">
+          <h3 className="text-2xl md:text-3xl font-medium tracking-tight lowercase mb-6 text-zinc-600">
             software developer
           </h3>
 
-          <p className=" text-zinc-600 mb-6 leading-relaxed">
+          <p className="text-zinc-600 mb-6 leading-relaxed">
             originally from Vietnam, i'm a passionate computer science student at Boston University and an aspriring software developer currently based in Boston. with hands-on experience in full-stack development and a strong interest in AI/ML, i enjoy learning new technologies and collaborating with others to create meaningful impact.
           </p>
 
@@ -175,13 +248,27 @@ export default function Hero() {
             outside of tech, i'm a home café enthusiast—i enjoy making espresso and matcha. here's my hot take: i actually don't like hot drinks!
           </p>
 
-          <div className="flex gap-4 text-sm text-violet-500">
-            <a href="/resume.pdf" className="flex items-center gap-1 hover:text-violet-700 transition-colors" target="_blank" rel="noopener noreferrer">
+          <div className="flex justify-center gap-4 text-sm text-violet-500">
+            <a href="#" className="flex items-center gap-1 hover:text-violet-700 transition-colors">
               view resume <ArrowRight size={16} />
             </a>
           </div>
         </motion.div>
-      </div>
+      </motion.div>
+
+      {/* Scroll indicator */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: showContent ? 1 : 0, y: showContent ? 0 : -20 }}
+        transition={{ duration: 0.8, delay: 1.5 }}
+        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center cursor-pointer"
+        onClick={scrollToExperience}
+      >
+        <span className="text-sm text-zinc-600 mb-2">scroll</span>
+        <motion.div animate={{ y: [0, 10, 0] }} transition={{ repeat: Number.POSITIVE_INFINITY, duration: 1.5 }}>
+          <ChevronDown size={20} className="text-violet-500" />
+        </motion.div>
+      </motion.div>
     </div>
   )
 }

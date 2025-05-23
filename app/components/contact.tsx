@@ -22,7 +22,7 @@ export default function Contact() {
         >
           <h2 className="mb-4 text-3xl font-medium tracking-tight text-purple-500 lowercase sm:text-4xl text-zinc-800">get in touch</h2>
           <p className="mb-8 text-zinc-600">
-            interested in collaborating on a tech project? contact me.
+            got a project in mind or just want to say hi? i'm always open to collaborating on exciting tech ideas, sharing knowledge, or grabbing a virtual coffee.
           </p>
         </motion.div>
         <motion.div

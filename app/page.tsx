@@ -4,10 +4,12 @@ import Footer from "./components/footer"
 import Experience from "./components/experience"
 import Projects from "./components/projects"
 import Navigation from "./components/navigation"
+import ScrollProgress from "./components/scroll-progress"
 
 export default function Page() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100 text-zinc-800">
+      <ScrollProgress />
       <Navigation />
       <section id="hero" className="min-h-screen">
         <Hero />
