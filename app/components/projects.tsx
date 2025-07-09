@@ -29,6 +29,28 @@ export default function Projects() {
   const projects = [
     {
       id: 1,
+      title: "Language Detection with BERT",
+      category: "machine learning",
+      image: "/language-detection.png",
+      year: "2025",
+      description: "Fine-tuned a multilingual BERT model for language identification across 70+ languages and built a full-stack web app (FastAPI + React) for real-time text language detection.",
+      links: {
+        github: "https://github.com/juzieeheyhey/language-detection.git",
+      }
+    },
+    {
+      id: 2,
+      title: "NOTO reproduction",
+      category: "machine learning",
+      image: "/noto.png",
+      year: "2025",
+      description: "As part of my research at BITLab, I reproduced the “Noto” experiment from Salido et al. (2025) to evaluate memorization vs. reasoning in large language models; built an inference pipeline using PyTorch and Hugging Face, and analyzed performance shifts on paraphrased prompts using accuracy and Cohen’s κ.",
+      links: {
+        github: "https://github.com/juzieeheyhey/llm_memorization_reasoning/tree/main/salido2025/noto_experiment",
+      }
+    },
+    {
+      id: 3,
       title: "Alzheimer's Diagnosis Predictions",
       category: "machine learning",
       image: "/alzheimer-diagnosis.png",
@@ -40,7 +62,7 @@ export default function Projects() {
       },
     },
     {
-      id: 2,
+      id: 4,
       title: "FoodByte",
       category: "web",
       image: "/foodbyte.png",
@@ -50,6 +72,18 @@ export default function Projects() {
       links: {
         demo: "https://drive.google.com/file/d/1bOQCpYQsK41-MaOwcIrJz9UD6BkTNK0D/view",
         github: "https://github.com/juzieeheyhey/FoodByte?tab=readme-ov-file",
+      },
+    },
+    {
+      id: 5,
+      title: "SparkBites! Web App",
+      category: "web",
+      image: "/sparkbites.png",
+      year: "2023",
+      description:
+        "Developed a full-stack web application for Boston University’s CS392 course using Next.js and Express (both in TypeScript), with PostgreSQL for data storage and JWT-based authentication. Key features include user signup/login, profile management, event browsing and filtering, and admin-approved event creation with image uploads. ",
+      links: {
+        github: "https://github.com/juzieeheyhey/web-development-project.git",
       },
     },
   ]
