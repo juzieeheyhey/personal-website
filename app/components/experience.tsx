@@ -19,6 +19,14 @@ export default function Experience() {
   const experiences = [
     {
       id: 1,
+      role: "research assistant",
+      company: "BITLab, Boston University",
+      period: "jun 2025-present",
+      description: "reproducing and implementing core methods from cutting-edge research on LLM reasoning vs memorization, aligned with recent findings in LLM evaluation and robustness. developing modular evaluation pipelines using Python, PyTorch, and Hugging Face Transformers to analyze reasoning behavior in large-scale language models.",
+      skills: ["python", "pytorch", "hugging face transformers", "LLM"]
+    },
+    {
+      id: 2,
       role: "teaching assistant",
       company: "boston university department of computer science",
       period: "2023 - present",
@@ -27,7 +35,7 @@ export default function Experience() {
       skills: ["python", "communication"],
     },
     {
-      id: 2,
+      id: 3,
       role: "software engineer intern",
       company: "fpt software ho chi minh",
       period: "jun-aug, 2024",
@@ -36,7 +44,7 @@ export default function Experience() {
       skills: ["react", "django", "postgres"],
     },
     {
-      id: 3,
+      id: 4,
       role: "software engineer intern",
       company: "gmd protocol",
       period: "jun-aug, 2023",
