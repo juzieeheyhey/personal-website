@@ -76,7 +76,7 @@ export default function Projects() {
     },
     {
       id: 5,
-      title: "SparkBites! Web App",
+      title: "Spark! Bites Web App",
       category: "web",
       image: "/sparkbites.png",
       year: "2023",
